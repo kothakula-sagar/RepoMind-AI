@@ -23,6 +23,24 @@ Frontend -> Worker /api/ai -> Groq/OpenAI, with context and filenames.
 
 This is an MVP: it selects up to 32 files for context, first 500 eligible paths, up to 85,000 characters, and is not an exhaustive code audit. Private GitHub repos and GitHub authentication are not yet implemented. AI may make mistakes; confirm findings against source and tests.
 
+
+## Fix "Request failed (405)" on GitHub Pages
+
+GitHub Pages only serves static frontend files. When **API backend URL** is blank, it cannot handle `POST /api/ai`. This is not caused by an invalid OpenAI or Groq key.
+
+### Deploy the API Worker (no local Node installation required)
+
+1. Visit https://dash.cloudflare.com/ and sign in or register.
+2. Open **Workers & Pages** → **Create** → **Worker**. Give it a name such as `repomind-ai-api`.
+3. In the Worker editor, replace the default code with the entire contents of [worker.js](./worker.js) and **Deploy**. The Worker URL should look like `https://repomind-ai-api.YOUR-SUBDOMAIN.workers.dev`.
+4. Under **Settings** → **Variables and Secrets**, add the plain-text variable `ALLOWED_ORIGIN` with the exact value `https://kothakula-sagar.github.io` (no trailing slash). Save and redeploy as needed.
+5. Open https://kothakula-sagar.github.io/RepoMind-AI/ → **Provider settings**. Paste the Worker URL, select OpenAI or Groq, paste your provider key, and choose **Apply settings**.
+6. Click **Test backend connection**. It checks `GET /api/health`. Once connected, select **Review code**, **Analyze features**, or **Ask the code**.
+
+If you prefer a local Wrangler deployment, `wrangler.toml` already sets the correct allowed origin: `npx wrangler login && npx wrangler deploy`.
+
+**Do not enter an API key in Cloudflare's public plain-text variables.** If using server-managed keys, add them as encrypted secrets, protect access with `APP_ACCESS_TOKEN`, and add authentication/quotas before sharing the service. With BYOK, the key is passed only to your own Worker over HTTPS for the request.
+
 ## Deployment
 
 1. Create a **new** GitHub repository, ideally named `repomind-ai`, and push these files to its `main` branch.
