@@ -2,6 +2,12 @@
 
 A responsive, source-grounded GitHub repository explorer with **OpenAI** and **Groq** support.
 
+## Architecture Map (GitDiagram-style)
+
+RepoMind AI now includes an **Architecture map** tab. Paste a public GitHub URL and select Analyze: the app automatically generates an interactive SVG view of up to 36 indexed source components, with detected import/script/stylesheet links where possible. Click any node to see file metadata, source links, and detected relationships. Zoom with the controls or mouse wheel, drag the canvas to pan, copy Mermaid flowchart text, or export an SVG image. If you configure the OpenAI or Groq Worker, click **Explain this component** for a source-grounded explanation.
+
+The graph is an **inferred subset**, not a complete architectural truth: repository code is not executed; link detection uses syntax patterns; fallback same-folder relationships are heuristics. Diagram exploration works without an AI key. AI explanations require the Cloudflare Worker to be deployed and configured.
+
 ## Features
 
 - Analyze public GitHub repositories directly from the browser, or through the Worker
